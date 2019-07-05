@@ -21,7 +21,8 @@ import { ShoppingItem } from './shopping-item.interface';
   <input #itemQuantity type='text' placeholder='Qtd'>
   <input #itemName type='text' placeholder='Name'>
   <button (click)="add(itemName.value, itemQuantity.value)">Add</button>
-  {{ error?.message }}
+  <p>{{ error?.message }}</p>
+  <p *ngIf="error">{{ error?.error | json }}</p>
   `
 })
 export class ListComponent implements OnInit {
@@ -40,7 +41,8 @@ export class ListComponent implements OnInit {
 
   add(itemName: string, itemQuantity: number) {
     this.api.createShoppingItem(itemName, itemQuantity).subscribe(
-      (item: ShoppingItem) => this.items.push(item)
+      (item: ShoppingItem) => this.items.push(item),
+      (error: any) => this.error = error
     );
   }
 
@@ -48,7 +50,8 @@ export class ListComponent implements OnInit {
     this.api.deleteShoppingItem(id).subscribe(
       (success: any) => this.items.splice(
         this.items.findIndex(item => item.id === id)
-      )
+      ),
+      (error: any) => this.error = error
     );
   }
 }
